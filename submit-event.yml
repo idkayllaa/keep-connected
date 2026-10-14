@@ -1,0 +1,109 @@
+name: Submit an event
+description: Share an event, talk, or meetup. It goes live on the Keep Connected site automatically.
+title: "[Event] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! When you submit, your event is checked automatically and published to the site in a minute or two. If anything needs fixing, you'll get a comment here explaining what to change.
+
+  - type: input
+    id: event-name
+    attributes:
+      label: Event name
+      placeholder: Résumé swap and coffee
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: event-type
+    attributes:
+      label: Event type
+      description: Pick everything that applies.
+      options:
+        - label: In-person
+        - label: Speaker session
+        - label: Company event
+        - label: Networking
+
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: Use the format YYYY-MM-DD.
+      placeholder: "2026-10-28"
+    validations:
+      required: true
+
+  - type: input
+    id: start-time
+    attributes:
+      label: Start time
+      placeholder: "10:00 AM"
+    validations:
+      required: true
+
+  - type: input
+    id: end-time
+    attributes:
+      label: End time
+      placeholder: "11:30 AM"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: time-zone
+    attributes:
+      label: Time zone
+      description: The time zone your start and end times are in.
+      options:
+        - Pacific (PT)
+        - Mountain (MT)
+        - Central (CT)
+        - Eastern (ET)
+        - UK (London)
+        - Central Europe (CET)
+        - India (IST)
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: City and state for in-person events, or "Online".
+      placeholder: Anaheim, CA
+    validations:
+      required: true
+
+  - type: input
+    id: host
+    attributes:
+      label: Hosted by
+      description: Your name, group, or company. Leave blank to use your GitHub username.
+      placeholder: SoCal Women in Security
+
+  - type: input
+    id: url
+    attributes:
+      label: Link to RSVP or join
+      description: Must start with https://
+      placeholder: https://lu.ma/your-event
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Short description
+      description: Optional. Up to 400 characters.
+      placeholder: Who it's for and what to expect.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirm
+      options:
+        - label: This is a real event that's open to attendees.
+          required: true

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keep Connected</title>
+<meta name="description" content="Events, talks, and meetups still happening for women in tech after the GHC cancellation. Anyone can share an event.">
+<meta property="og:title" content="Keep Connected">
+<meta property="og:description" content="The GHC stage might be closed, but we haven't gone anywhere. Find and share in-person meetups, speaker sessions, company events, and networking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://idkayllaa.github.io/keep-connected/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#F3F5F9; --surface:#FFFFFF; --ink:#18213A; --ink-2:#4A5470; --ink-3:#717A93;
+  --rule:#DCE3EE; --margin:#D4483B; --accent:#2F3FBF; --accent-ink:#FFFFFF; --focus:#2F3FBF;
+  --c-inperson:#9A6412; --c-talk:#7239AE; --c-company:#17705F; --c-network:#B23C0B;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --cond:"IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1424; --surface:#171D31; --ink:#E8ECF5; --ink-2:#B0B8CD; --ink-3:#848DA6;
+    --rule:#2A3350; --margin:#E2685C; --accent:#9AA5FF; --accent-ink:#0F1424; --focus:#9AA5FF;
+    --c-inperson:#F0C05A; --c-talk:#C9A2F2; --c-company:#74D3C1; --c-network:#F7A273;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1424; --surface:#171D31; --ink:#E8ECF5; --ink-2:#B0B8CD; --ink-3:#848DA6;
+  --rule:#2A3350; --margin:#E2685C; --accent:#9AA5FF; --accent-ink:#0F1424; --focus:#9AA5FF;
+  --c-inperson:#F0C05A; --c-talk:#C9A2F2; --c-company:#74D3C1; --c-network:#F7A273;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 0}
+.mark{font-family:var(--cond);font-weight:600;font-size:19px;letter-spacing:.01em;text-decoration:none;color:var(--ink)}
+.mark small{display:block;font-family:var(--sans);font-weight:400;font-size:12px;color:var(--ink-3);letter-spacing:0}
+
+.btn{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:9px 14px;font-weight:500;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+
+.hero{padding:28px 0 8px}
+.hero h1{font-family:var(--cond);font-weight:600;font-size:clamp(34px,6vw,58px);line-height:1.02;margin:0 0 12px;letter-spacing:-.01em;max-width:14ch}
+.hero p{color:var(--ink-2);max-width:56ch;margin:0 0 22px;font-size:17px}
+.hero .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
+
+.days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}
+.day{background:none;border:0;border-right:1px solid var(--rule);text-align:left;padding:14px 14px 16px;cursor:pointer;position:relative}
+.day:last-child{border-right:0}
+.day:hover{background:var(--surface)}
+.day .dow{font-size:13px;color:var(--ink-3)}
+.day .num{display:block;font-family:var(--cond);font-weight:600;font-size:clamp(44px,9vw,84px);line-height:.95;margin:2px 0 6px}
+.day .cnt{font-size:13px;color:var(--ink-2)}
+.day[aria-pressed="true"]{background:var(--surface)}
+.day[aria-pressed="true"]::after{content:"";position:absolute;left:0;right:0;top:-2px;height:4px;background:var(--accent)}
+
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:26px 0 10px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--cat,var(--ink-3))}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 14px;font-size:13px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.status{font-size:13px;color:var(--ink-3);margin:0 0 6px;min-height:20px}
+.status button{background:none;border:0;color:var(--accent);cursor:pointer;padding:0;font-size:13px;text-decoration:underline}
+
+.catdesc{margin:2px 0 10px;padding:2px 0 2px 12px;border-left:3px solid var(--cat,var(--ink-3));border-radius:0;font-size:15px;color:var(--ink-2);max-width:70ch}
+.catdesc[hidden]{display:none}
+.log{margin-bottom:40px}
+.daygroup h2{font-size:15px;font-weight:600;margin:26px 0 0;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.entry{display:grid;grid-template-columns:86px minmax(0,1fr);border-bottom:1px solid var(--rule);background:var(--surface)}
+.entry .time{padding:16px 12px 16px 14px;border-right:2px solid var(--margin);font-size:14px;font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.entry .time span{display:block;font-weight:400;font-size:12px;color:var(--ink-3)}
+.entry .body{padding:14px 16px 14px 18px}
+.entry h3{font-size:17px;font-weight:600;margin:0 0 2px;line-height:1.3}
+.entry .meta{font-size:14px;color:var(--ink-2);margin:0 0 8px}
+.entry .blurb{font-size:14px;color:var(--ink-2);margin:0 0 10px;max-width:70ch}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tag{font-size:12px;font-weight:500;padding:2px 8px;border-radius:4px;color:var(--cat);background:color-mix(in srgb,var(--cat) 13%,transparent)}
+.links{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:14px}
+.links a{font-weight:500}
+.links .report{margin-left:auto;color:var(--ink-3);font-size:12px;font-weight:400;text-decoration:none}
+.links .report:hover{color:var(--margin)}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-2);background:var(--surface);border:1px dashed var(--rule);border-radius:8px;margin-top:16px}
+
+.month{margin:12px 0 40px}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mhead h2{font-family:var(--cond);font-size:26px;font-weight:600;margin:0}
+.mhead .nav{display:flex;gap:6px}
+.grid-scroll{overflow-x:auto}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:2px solid var(--ink);border-left:1px solid var(--rule);min-width:560px}
+.mgrid .wd{font-size:12px;color:var(--ink-3);padding:6px 8px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);background:var(--bg)}
+.cell{min-height:96px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);background:var(--surface);padding:6px;text-align:left;border-top:0;border-left:0;font-size:12px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.cell.out{background:var(--bg);color:var(--ink-3);cursor:default}
+.cell .n{font-weight:500;font-size:13px}
+.cell.week .n{color:var(--accent);font-weight:600}
+.cell .pill{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 5px;border-radius:3px;color:var(--cat);background:color-mix(in srgb,var(--cat) 13%,transparent);font-weight:500}
+.cell .more{color:var(--ink-3)}
+.cell:not(.out):hover{outline:1px solid var(--ink-3);outline-offset:-1px}
+
+footer{border-top:1px solid var(--rule);padding:22px 0 34px;font-size:13px;color:var(--ink-3)}
+footer p{margin:0 0 6px;max-width:70ch}
+
+dialog{border:0;border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 40px)}
+dialog::backdrop{background:rgba(10,14,30,.55)}
+.dlg{padding:22px 22px 20px}
+.dlg h2{font-family:var(--cond);font-weight:600;font-size:26px;margin:0 0 4px}
+.dlg .sub{color:var(--ink-2);font-size:14px;margin:0 0 18px}
+.note{font-size:12px;color:var(--ink-3);margin:14px 0 0}
+.feeds{display:grid;gap:8px;margin-bottom:16px}
+.feeds label{display:flex;align-items:center;gap:10px;border:1px solid var(--rule);border-radius:8px;padding:10px 12px;cursor:pointer;font-size:14px}
+.feeds label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.feeds input{accent-color:var(--accent)}
+.feeds small{color:var(--ink-3);margin-left:auto}
+.apps{display:flex;flex-wrap:wrap;gap:8px}
+.copyrow{display:flex;gap:8px;margin-top:14px}
+.copyrow input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--bg);font-size:12px;color:var(--ink-2)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px);z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:640px){
+  .days{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .day:nth-child(2){border-right:0}
+  .day:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+  .entry{grid-template-columns:68px minmax(0,1fr)}
+  .entry .time{padding:14px 8px 14px 10px;font-size:13px}
+  .entry .body{padding:12px 12px 12px 14px}
+  .links .report{margin-left:0}
+  header.top .btn span.long{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.hero .hint{font-size:13px;color:var(--ink-3);margin:-20px 0 30px}
+a.btn{text-decoration:none;color:inherit}
+a.btn.primary{color:var(--accent-ink)}
+.apps a.btn{color:var(--ink)}
+.loading{padding:40px 0;color:var(--ink-3)}
+.dlg .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+header.top .btn{gap:0}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="./">Keep Connected</a>
+    <a class="btn" data-submit href="#" target="_blank" rel="noopener">Submit<span class="long">&nbsp;an event</span></a>
+  </header>
+
+  <section class="hero">
+    <h1>We're Still Here.</h1>
+    <p>The GHC stage might be closed, but the brilliant women in tech who drive this industry forward haven't gone anywhere. Let's redirect our energy and support each other. Please feel free to share ongoing events (meetups in California, virtual talks, company events, and sessions from speakers who lost their slot) so we can stay connected.</p>
+    <div class="actions">
+      <button class="btn primary" data-open="subscribe">Add to my calendar</button>
+      <a class="btn" data-submit href="#" target="_blank" rel="noopener">Submit an event</a>
+    </div>
+    <p class="hint">Submitting opens a short form on GitHub. Your event shows up here a minute or two later.</p>
+    <div class="days" id="days"></div>
+  </section>
+
+  <div class="toolbar">
+    <div class="chips" id="chips"></div>
+    <div class="seg" role="group" aria-label="View">
+      <button data-view="list" aria-pressed="true">List</button>
+      <button data-view="month" aria-pressed="false">Month</button>
+    </div>
+  </div>
+  <p class="catdesc" id="catdesc" hidden></p>
+  <p class="status" id="status" aria-live="polite"></p>
+
+  <main id="out"><p class="loading">Loading events…</p></main>
+
+  <footer>
+    <p>Anyone with a GitHub account can share an event, and it shows up here in a minute or two. Listings reported by three people are hidden automatically.</p>
+    <p>Not affiliated with AnitaB.org or the Grace Hopper Celebration. For refunds and registration questions, contact <a href="https://anitab.org" target="_blank" rel="noopener">AnitaB.org</a> directly.</p>
+    <p><a id="repo-link" href="#" target="_blank" rel="noopener">See how this site works on GitHub</a></p>
+  </footer>
+</div>
+
+<dialog id="dlg-subscribe" aria-labelledby="subs-title">
+  <div class="dlg">
+    <h2 id="subs-title">Add to my calendar</h2>
+    <p class="sub">Subscribe once. New events show up in your calendar on their own, no need to come back here.</p>
+    <div class="feeds" id="feeds"></div>
+    <div class="apps">
+      <a class="btn" id="app-google" href="#" target="_blank" rel="noopener">Google Calendar</a>
+      <a class="btn" id="app-apple" href="#">Apple Calendar</a>
+      <a class="btn" id="app-outlook" href="#" target="_blank" rel="noopener">Outlook</a>
+    </div>
+    <div class="copyrow"><input id="feed-url" readonly aria-label="Calendar feed link"><button class="btn" id="copy">Copy link</button></div>
+    <p class="note">For other calendar apps, copy the link and add it as a subscribed calendar. Most apps check for new events every few hours. Google Calendar can take up to a day.</p>
+    <div class="foot"><button class="btn" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const REPO="idkayllaa/keep-connected";
+const SITE_URL="https://idkayllaa.github.io/keep-connected/";
+const SUBMIT_URL=`https://github.com/${REPO}/issues/new?template=submit-event.yml`;
+const CATS={
+  inperson:{label:"In-person",short:"In-person",desc:"Still have your tickets booked? Here are some in-person events still happening in and around Anaheim."},
+  talk:{label:"Speaker sessions",short:"Speaker session",desc:"Talks that were headed for the GHC stage, now given online by the speakers who prepared them."},
+  company:{label:"Company events",short:"Company event",desc:"Recruiting receptions, office hours, and info sessions from companies that still want to meet you."},
+  network:{label:"Networking",short:"Networking",desc:"Meetups, résumé reviews, and mentorship, in person or online. Online meetups include a link to join."}
+};
+const FEEDS=[["all","Everything"],["inperson","In-person only"],["talk","Speaker sessions only"],["company","Company events only"],["network","Networking only"]];
+const WEEK=["2026-10-27","2026-10-28","2026-10-29","2026-10-30"];
+
+let events=[];
+const now0=new Date();
+const state={cat:"all",day:null,view:"list",month:new Date(now0.getFullYear(),now0.getMonth(),1),loaded:false,error:false};
+const $=s=>document.querySelector(s);
+
+document.querySelectorAll("[data-submit]").forEach(a=>a.href=SUBMIT_URL);
+$("#repo-link").href=`https://github.com/${REPO}`;
+
+function d(iso){const [y,m,dd]=iso.split("-").map(Number);return new Date(y,m-1,dd)}
+function isoOf(dt){return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`}
+function fmtDay(iso){return d(iso).toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"})}
+function fmtTime(t){let [h,m]=t.split(":").map(Number);const ap=h>=12?"PM":"AM";h=h%12||12;return m?`${h}:${String(m).padStart(2,"0")} ${ap}`:`${h} ${ap}`}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeUrl(u){try{const x=new URL(u);return x.protocol==="https:"?x.toString():"#"}catch(_){return "#"}}
+function byTime(a,b){return a.startUtc.localeCompare(b.startUtc)}
+function matchesCat(e){return state.cat==="all"||e.tags.includes(state.cat)}
+function filtered(){
+  const now=Date.now();
+  return events.filter(e=>matchesCat(e)&&(state.day?e.date===state.day:new Date(e.endUtc).getTime()>=now)).sort(byTime);
+}
+function gcal(e){
+  const f=(dt,t)=>dt.replace(/-/g,"")+"T"+t.replace(":","")+"00";
+  const p=new URLSearchParams({action:"TEMPLATE",text:e.title,dates:f(e.date,e.start)+"/"+f(e.date,e.end),ctz:e.tz,details:(e.desc?e.desc+"\n\n":"")+"RSVP or join: "+e.url+"\n\nMore events: "+SITE_URL,location:e.where});
+  return "https://calendar.google.com/calendar/render?"+p.toString();
+}
+function reportUrl(e){
+  const p=new URLSearchParams({template:"report-listing.yml","event-id":String(e.id),title:"[Report] "+e.title});
+  return `https://github.com/${REPO}/issues/new?`+p.toString();
+}
+
+function renderDays(){
+  $("#days").innerHTML=WEEK.map(iso=>{
+    const n=events.filter(e=>e.date===iso).length;
+    const dow=d(iso).toLocaleDateString("en-US",{weekday:"long"});
+    const cnt=state.loaded?`${n} ${n===1?"event":"events"}`:"&nbsp;";
+    return `<button class="day" data-day="${iso}" aria-pressed="${state.day===iso}"><span class="dow">${dow}</span><span class="num">${d(iso).getDate()}</span><span class="cnt">${cnt}</span></button>`;
+  }).join("");
+}
+function renderChips(){
+  const all=`<button class="chip" data-cat="all" aria-pressed="${state.cat==="all"}">All</button>`;
+  $("#chips").innerHTML=all+Object.entries(CATS).map(([k,c])=>`<button class="chip" data-cat="${k}" aria-pressed="${state.cat===k}" style="--cat:var(--c-${k})"><span class="dot" aria-hidden="true"></span>${c.label}</button>`).join("");
+}
+function renderStatus(){
+  const cd=$("#catdesc");
+  if(state.cat==="all"){cd.hidden=true;cd.textContent=""}else{cd.hidden=false;cd.style.setProperty("--cat","var(--c-"+state.cat+")");cd.textContent=CATS[state.cat].desc}
+  if(!state.loaded){$("#status").textContent="";return}
+  const n=filtered().length;const parts=[];
+  if(state.cat!=="all")parts.push(CATS[state.cat].label.toLowerCase());
+  if(state.day)parts.push(fmtDay(state.day));
+  $("#status").innerHTML=parts.length?`Showing ${n} ${n===1?"event":"events"}: ${esc(parts.join(", "))}. <button id="clear">Clear filters</button>`:`${n} upcoming ${n===1?"event":"events"}`;
+}
+function entryHTML(e){
+  const tags=e.tags.map(t=>`<span class="tag" style="--cat:var(--c-${t})">${CATS[t].short}</span>`).join("");
+  return `<article class="entry" id="ev-${e.id}">
+    <div class="time">${fmtTime(e.start)}<span>to ${fmtTime(e.end)} ${esc(e.tzLabel)}</span></div>
+    <div class="body">
+      <h3>${esc(e.title)}</h3>
+      <p class="meta">${esc(e.where)}. Hosted by ${esc(e.host)}</p>
+      ${e.desc?`<p class="blurb">${esc(e.desc)}</p>`:""}
+      <div class="tags">${tags}</div>
+      <div class="links">
+        <a href="${esc(safeUrl(e.url))}" target="_blank" rel="noopener nofollow">RSVP or join</a>
+        <a href="${esc(gcal(e))}" target="_blank" rel="noopener">Add to Google Calendar</a>
+        <a class="report" href="${esc(reportUrl(e))}" target="_blank" rel="noopener">Report listing</a>
+      </div>
+    </div></article>`;
+}
+function emptyHTML(){
+  const none=!events.length;
+  const msg=none?"No events yet. Know of one? Share it and it'll show up here in a minute or two."
+    :"Nothing here for this filter yet. Know of something? Share it.";
+  return `<div class="empty">${msg}<div style="margin-top:14px"><a class="btn primary" href="${SUBMIT_URL}" target="_blank" rel="noopener">Submit an event</a></div></div>`;
+}
+function renderList(){
+  if(state.error){$("#out").innerHTML=`<div class="empty">Events couldn't load. Refresh the page to try again.</div>`;return}
+  if(!state.loaded){$("#out").innerHTML=`<p class="loading">Loading events…</p>`;return}
+  const list=filtered();
+  if(!list.length){$("#out").innerHTML=emptyHTML();return}
+  const groups={};list.forEach(e=>(groups[e.date]=groups[e.date]||[]).push(e));
+  const keys=Object.keys(groups).sort();
+  $("#out").innerHTML=`<div class="log">`+keys.map(iso=>`<section class="daygroup"><h2>${fmtDay(iso)}</h2>${groups[iso].map(entryHTML).join("")}</section>`).join("")+`</div>`;
+}
+function renderMonth(){
+  const m=state.month,y=m.getFullYear(),mo=m.getMonth();
+  const first=new Date(y,mo,1),lead=first.getDay();
+  const pool=events.filter(matchesCat);
+  const total=new Date(y,mo+1,0).getDate()+lead>35?42:35;
+  let cells=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(w=>`<div class="wd">${w}</div>`).join("");
+  for(let i=0;i<total;i++){
+    const dt=new Date(y,mo,1-lead+i),iso=isoOf(dt),out=dt.getMonth()!==mo;
+    const es=pool.filter(e=>e.date===iso).sort(byTime);
+    const pills=es.slice(0,2).map(e=>`<span class="pill" style="--cat:var(--c-${e.tags[0]||"network"})">${esc(e.title)}</span>`).join("")+(es.length>2?`<span class="more">+${es.length-2} more</span>`:"");
+    cells+=`<button class="cell${out?" out":""}${WEEK.includes(iso)?" week":""}" ${out?'disabled tabindex="-1"':`data-goto="${iso}"`} aria-label="${fmtDay(iso)}, ${es.length} ${es.length===1?"event":"events"}"><span class="n">${dt.getDate()}</span>${out?"":pills}</button>`;
+  }
+  $("#out").innerHTML=`<div class="month"><div class="mhead"><h2>${m.toLocaleDateString("en-US",{month:"long",year:"numeric"})}</h2><div class="nav"><button class="btn" data-mnav="-1" aria-label="Previous month">Prev</button><button class="btn" data-mnav="1" aria-label="Next month">Next</button></div></div><div class="grid-scroll"><div class="mgrid">${cells}</div></div></div>`;
+}
+function render(){
+  renderDays();renderChips();renderStatus();
+  document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===state.view));
+  state.view==="list"?renderList():renderMonth();
+}
+
+let tt;function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2800)}
+
+document.addEventListener("click",ev=>{
+  const t=ev.target.closest("button");if(!t)return;
+  if(t.dataset.day){state.day=state.day===t.dataset.day?null:t.dataset.day;state.view="list";render();return}
+  if(t.dataset.cat){state.cat=t.dataset.cat;render();return}
+  if(t.dataset.view){state.view=t.dataset.view;render();return}
+  if(t.id==="clear"){state.cat="all";state.day=null;render();return}
+  if(t.dataset.mnav){state.month=new Date(state.month.getFullYear(),state.month.getMonth()+Number(t.dataset.mnav),1);render();return}
+  if(t.dataset.goto){state.day=t.dataset.goto;state.view="list";render();$("#status").scrollIntoView({block:"start"});return}
+  if(t.dataset.open==="subscribe"){renderFeeds();const dl=$("#dlg-subscribe");try{dl.showModal()}catch(_){dl.setAttribute("open","")}return}
+  if(t.hasAttribute("data-close")){t.closest("dialog").close();return}
+  if(t.id==="copy"){
+    const v=$("#feed-url").value;
+    try{navigator.clipboard.writeText(v).then(()=>toast("Feed link copied"),()=>{$("#feed-url").select();toast("Select the link and copy it")})}
+    catch(_){$("#feed-url").select();toast("Select the link and copy it")}
+    return}
+});
+
+function renderFeeds(){
+  $("#feeds").innerHTML=FEEDS.map(([k,l],i)=>{const n=k==="all"?events.length:events.filter(e=>e.tags.includes(k)).length;return `<label><input type="radio" name="feed" value="${k}" ${i===0?"checked":""}>${l}<small>${n} ${n===1?"event":"events"}</small></label>`}).join("");
+  const set=()=>{
+    const k=document.querySelector('input[name="feed"]:checked').value;
+    const https=`${SITE_URL}feeds/${k}.ics`,webcal=https.replace(/^https:/,"webcal:");
+    $("#feed-url").value=https;
+    $("#app-google").href="https://calendar.google.com/calendar/r?cid="+encodeURIComponent(webcal);
+    $("#app-apple").href=webcal;
+    $("#app-outlook").href="https://outlook.live.com/calendar/0/addfromweb?url="+encodeURIComponent(https)+"&name="+encodeURIComponent("Keep Connected");
+  };
+  $("#feeds").onchange=set;set();
+}
+
+render();
+fetch("events.json",{cache:"no-store"})
+  .then(r=>{if(!r.ok)throw new Error(r.status);return r.json()})
+  .then(data=>{events=(data.events||[]).filter(e=>e&&e.date&&e.startUtc).map(e=>({...e,tags:(e.tags||[]).filter(t=>CATS[t])}));state.loaded=true;render()})
+  .catch(()=>{state.error=true;state.loaded=true;render()});
+</script>
+</body>
+</html>

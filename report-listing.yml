@@ -1,0 +1,35 @@
+name: Report a listing
+description: Flag an event that's spam, misleading, or inappropriate.
+title: "[Report] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep the list trustworthy. Listings reported by three different people are hidden automatically.
+
+  - type: input
+    id: event-id
+    attributes:
+      label: Event number
+      description: Filled in for you when you use the Report link on the site.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Reason
+      options:
+        - Spam or advertising
+        - Misleading or fake
+        - Inappropriate
+        - Event was canceled
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Optional.
