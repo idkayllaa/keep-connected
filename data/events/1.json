@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "title": "Reclaim",
+  "host": "@idkayllaa",
+  "date": "2026-10-28",
+  "start": "09:15",
+  "end": "19:00",
+  "tz": "America/Los_Angeles",
+  "tzLabel": "PT",
+  "where": "Los Angeles, CA",
+  "tags": [
+    "inperson"
+  ],
+  "url": "https://partiful.com/e/ZkZRomSJSk0BPVPQk1PR?c=RJGV7_Tr",
+  "desc": "\"RECLAIM is a one-day networking event in Los Angeles area on October 28th, for everyone who was counting down to Grace Hopper Celebration 2026.\" [see the link for more]",
+  "startUtc": "2026-10-28T16:15:00.000Z",
+  "endUtc": "2026-10-29T02:00:00.000Z",
+  "submittedBy": "idkayllaa",
+  "issue": 1,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-15T02:14:19.243Z",
+  "updatedAt": "2026-10-15T02:14:19.243Z"
+}
