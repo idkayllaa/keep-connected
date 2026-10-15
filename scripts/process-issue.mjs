@@ -100,7 +100,7 @@ async function handleSubmission(fields) {
     if (!existing) {
       const active = fs.existsSync(DATA_DIR) ? fs.readdirSync(DATA_DIR).filter((f) => f.endsWith(".json"))
         .map((f) => JSON.parse(fs.readFileSync(path.join(DATA_DIR, f), "utf8")))
-        .filter((e) => e.submittedBy === author && !e.hidden && new Date(e.endUtc) > new Date()).length : 0;
+        .filter((e) => e.submittedBy === author && !e.hidden && (e.dateTbd || new Date(e.endUtc) > new Date())).length : 0;
       if (active >= MAX_ACTIVE_PER_PERSON && author.toLowerCase() !== repoOwner) return { write: false, limit: true };
     }
     const data = {
@@ -127,7 +127,10 @@ async function handleSubmission(fields) {
     await comment(issue.number,
       `Your event is live on ${SITE_NAME}: ${siteUrl}\nIt can take a minute or two to appear.\n\n` +
       `Need to change something? Edit this issue and the listing updates automatically.\n` +
-      `Event canceled? Comment \`/remove\` here and it comes down right away.`);
+      `Event canceled? Comment \`/remove\` here and it comes down right away.` +
+      (event.dateTbd || event.timeTbd
+        ? `\n\nOnce the ${event.dateTbd ? "date" : "time"} is set, edit this issue and fill it in. The listing moves into place on the site and gets added to subscribed calendars automatically.`
+        : ""));
   } else if (result.write) {
     await comment(issue.number, result.wasHidden
       ? "Your changes were saved, but this listing is currently hidden, so it won't show on the site."
