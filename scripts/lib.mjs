@@ -74,6 +74,10 @@ export function checkedBoxes(value) {
     .map((m) => m[1]);
 }
 
+const TBD_RE = /^(tbd|tba|to be (determined|announced|decided)|not (set|scheduled) yet)\.?$/i;
+export const isTbd = (str) => TBD_RE.test(String(str || "").trim());
+const isBlank = (str) => !String(str || "").trim();
+
 export function parseDate(str) {
   const s = String(str || "").trim();
   let y, m, d;
@@ -130,6 +134,11 @@ export function zonedToUtc(date, time, tz) {
 
 // ---------- Validation ----------
 
+function nextDay(date) {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10);
+}
+
 const clean = (s, max) => String(s || "").replace(/\s+/g, " ").trim().slice(0, max);
 
 export function validateSubmission(fields, author, now = new Date()) {
@@ -141,13 +150,19 @@ export function validateSubmission(fields, author, now = new Date()) {
   const tags = checkedBoxes(fields[LABELS.tags]).map((l) => TAGS[l]).filter(Boolean);
   if (!tags.length) errors.push("Pick at least one event type.");
 
-  const date = parseDate(fields[LABELS.date]);
-  if (!date) errors.push("Write the date as YYYY-MM-DD, for example 2026-10-28.");
+  const rawDate = fields[LABELS.date];
+  const dateTbd = isTbd(rawDate);
+  const date = dateTbd ? "" : parseDate(rawDate);
+  if (!dateTbd && !date) errors.push("Write the date as YYYY-MM-DD, for example 2026-10-28, or write TBD if it isn't set yet.");
 
-  const start = parseTime(fields[LABELS.start]);
-  const end = parseTime(fields[LABELS.end]);
-  if (!start) errors.push("Write the start time like 10:00 AM or 14:30.");
-  if (!end) errors.push("Write the end time like 11:30 AM or 16:00.");
+  // Times are optional. Blank or TBD start time means the time isn't set yet.
+  const rawStart = fields[LABELS.start], rawEnd = fields[LABELS.end];
+  const timeTbd = dateTbd || isBlank(rawStart) || isTbd(rawStart);
+  const start = timeTbd ? "" : parseTime(rawStart);
+  const endTbd = !timeTbd && (isBlank(rawEnd) || isTbd(rawEnd));
+  const end = timeTbd || endTbd ? "" : parseTime(rawEnd);
+  if (!timeTbd && !start) errors.push("Write the start time like 10:00 AM or 14:30, or write TBD.");
+  if (!timeTbd && !endTbd && !end) errors.push("Write the end time like 11:30 AM or 16:00, or leave it blank.");
 
   const tzChoice = TIMEZONES[String(fields[LABELS.tz] || "").trim()];
   if (!tzChoice) errors.push("Pick a time zone.");
@@ -156,7 +171,7 @@ export function validateSubmission(fields, author, now = new Date()) {
   if (!where) errors.push('Add a location, or write "Online".');
   else if (where.length > 120) errors.push("Keep the location under 120 characters.");
 
-  const host = clean(fields[LABELS.host], 100) || `@${author}`;
+  const host = clean(fields[LABELS.host], 100);
 
   const rawUrl = String(fields[LABELS.url] || "").trim();
   let url = "";
@@ -174,10 +189,16 @@ export function validateSubmission(fields, author, now = new Date()) {
 
   if (!checkedBoxes(fields[LABELS.confirm]).length) errors.push("Check the box confirming this is a real event.");
 
-  let startUtc, endUtc;
-  if (date && start && end && tzChoice) {
-    startUtc = zonedToUtc(date, start, tzChoice.tz);
-    endUtc = zonedToUtc(date, end, tzChoice.tz);
+  let startUtc = null, endUtc = null;
+  if (!dateTbd && date && tzChoice && (timeTbd || (start && (endTbd || end)))) {
+    if (timeTbd) {
+      // All-day: span the whole day in the event's time zone.
+      startUtc = zonedToUtc(date, "00:00", tzChoice.tz);
+      endUtc = zonedToUtc(nextDay(date), "00:00", tzChoice.tz);
+    } else {
+      startUtc = zonedToUtc(date, start, tzChoice.tz);
+      endUtc = endTbd ? new Date(startUtc.getTime() + 3600e3) : zonedToUtc(date, end, tzChoice.tz);
+    }
     if (endUtc <= startUtc) errors.push("The end time needs to be after the start time.");
     else if (endUtc < now) errors.push("That event has already ended. Check the date and times.");
     else if (startUtc - now > 366 * 864e5) errors.push("That date is more than a year away. Check the year.");
@@ -188,9 +209,11 @@ export function validateSubmission(fields, author, now = new Date()) {
     errors,
     event: {
       title, host, date, start, end,
+      dateTbd, timeTbd, endTbd,
       tz: tzChoice.tz, tzLabel: tzChoice.short,
       where, tags, url, desc,
-      startUtc: startUtc.toISOString(), endUtc: endUtc.toISOString(),
+      startUtc: startUtc ? startUtc.toISOString() : null,
+      endUtc: endUtc ? endUtc.toISOString() : null,
     },
   };
 }
@@ -236,13 +259,17 @@ export function toIcs(events, { name, siteUrl, host }) {
     "REFRESH-INTERVAL;VALUE=DURATION:PT1H", "X-PUBLISHED-TTL:PT1H",
   ];
   for (const e of events) {
-    const details = [e.desc, `Hosted by ${e.host}`, `RSVP or join: ${e.url}`, `More events: ${siteUrl}`].filter(Boolean).join("\n\n");
+    if (e.dateTbd || !e.startUtc) continue; // added to calendars once a date is set
+    const timing = e.timeTbd
+      ? [`DTSTART;VALUE=DATE:${e.date.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${nextDay(e.date).replace(/-/g, "")}`]
+      : [`DTSTART:${icsDate(e.startUtc)}`, `DTEND:${icsDate(e.endUtc)}`];
+    const note = e.timeTbd ? "Time to be announced." : e.endTbd ? "End time to be announced." : "";
+    const details = [note, e.desc, e.host ? `Hosted by ${e.host}` : "", `RSVP or join: ${e.url}`, `More events: ${siteUrl}`].filter(Boolean).join("\n\n");
     lines.push(
       "BEGIN:VEVENT",
       `UID:keep-connected-${e.id}@${host}`,
       `DTSTAMP:${stamp}`,
-      `DTSTART:${icsDate(e.startUtc)}`,
-      `DTEND:${icsDate(e.endUtc)}`,
+      ...timing,
       `SUMMARY:${icsText(e.title)}`,
       `DESCRIPTION:${icsText(details)}`,
       `LOCATION:${icsText(e.where)}`,
