@@ -15,14 +15,15 @@ fs.mkdirSync(path.join(OUT, "feeds"), { recursive: true });
 fs.cpSync("site", OUT, { recursive: true });
 
 const events = readEvents("data/events")
-  .filter((e) => !e.hidden && e.startUtc && e.endUtc && e.title)
+  .filter((e) => !e.hidden && e.title && (e.dateTbd || (e.startUtc && e.endUtc)))
   .map((e) => ({
-    id: e.id, title: e.title, host: e.host, date: e.date, start: e.start, end: e.end,
+    id: e.id, title: e.title, host: e.host, date: e.date || "", start: e.start || "", end: e.end || "",
+    dateTbd: !!e.dateTbd, timeTbd: !!e.timeTbd, endTbd: !!e.endTbd,
     tz: e.tz, tzLabel: e.tzLabel, where: e.where,
     tags: (e.tags || []).filter((t) => knownTags.has(t)),
-    url: e.url, desc: e.desc || "", startUtc: e.startUtc, endUtc: e.endUtc,
+    url: e.url, desc: e.desc || "", startUtc: e.startUtc || null, endUtc: e.endUtc || null,
   }))
-  .sort((a, b) => a.startUtc.localeCompare(b.startUtc));
+  .sort((a, b) => (a.startUtc || "9999").localeCompare(b.startUtc || "9999") || a.id - b.id);
 
 fs.writeFileSync(path.join(OUT, "events.json"),
   JSON.stringify({ updated: new Date().toISOString(), events }, null, 2));
