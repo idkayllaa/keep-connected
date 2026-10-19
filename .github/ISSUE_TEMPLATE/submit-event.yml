@@ -1,6 +1,6 @@
 name: Submit an event
 description: Share an event, talk, or meetup. It goes live on the Keep Connected site automatically.
-title: "[Event] "
+title: "[New Event Submission]"
 body:
   - type: markdown
     attributes:
@@ -53,7 +53,7 @@ body:
     id: time-zone
     attributes:
       label: Time zone
-      description: The time zone your start and end times are in.
+      description: "If left blank, this will default to Pacific Time (PT)."
       options:
         - Pacific (PT)
         - Mountain (MT)
@@ -64,7 +64,7 @@ body:
         - India (IST)
       default: 0
     validations:
-      required: true
+      required: false
 
   - type: input
     id: where
