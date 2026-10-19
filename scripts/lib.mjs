@@ -69,7 +69,7 @@ export function parseForm(body) {
 export function checkedBoxes(value) {
   return String(value || "")
     .split("\n")
-    .map((l) => l.match(/^\s*-\s*\[[xX]\]\s*(.+?)\s*$/))
+    .map((l) => l.match(/^\s*-\s*[[xX]]\s*(.+?)\s*$/))
     .filter(Boolean)
     .map((m) => m[1]);
 }
@@ -164,8 +164,8 @@ export function validateSubmission(fields, author, now = new Date()) {
   if (!timeTbd && !start) errors.push("Write the start time like 10:00 AM or 14:30, or write TBD.");
   if (!timeTbd && !endTbd && !end) errors.push("Write the end time like 11:30 AM or 16:00, or leave it blank.");
 
-  const tzChoice = TIMEZONES[String(fields[LABELS.tz] || "").trim()];
-  if (!tzChoice) errors.push("Pick a time zone.");
+  const rawTz = String(fields[LABELS.tz] || "").trim();
+  const tzChoice = rawTz ? TIMEZONES[rawTz] : TIMEZONES["Pacific (PT)"];
 
   const where = clean(fields[LABELS.where], 200);
   if (!where) errors.push('Add a location, or write "Online".');
