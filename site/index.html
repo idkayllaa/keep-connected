@@ -63,7 +63,9 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:12p
 .hero p{color:var(--ink-2);max-width:56ch;margin:0 0 22px;font-size:17px}
 .hero .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
 
-.days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}
+.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.week-nav h2{font-family:var(--cond);font-size:18px;margin:0;}
+.days{display:grid;grid-template-columns:repeat(7,minmax(68px,1fr));border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);overflow-x:auto;scrollbar-width:thin;}
 .day{background:none;border:0;border-right:1px solid var(--rule);text-align:left;padding:14px 14px 16px;cursor:pointer;position:relative}
 .day:last-child{border-right:0}
 .day:hover{background:var(--surface)}
@@ -140,9 +142,6 @@ dialog::backdrop{background:rgba(10,14,30,.55)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media (max-width:640px){
-  .days{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .day:nth-child(2){border-right:0}
-  .day:nth-child(-n+2){border-bottom:1px solid var(--rule)}
   .entry{grid-template-columns:68px minmax(0,1fr)}
   .entry .time{padding:14px 8px 14px 10px;font-size:13px}
   .entry .body{padding:12px 12px 12px 14px}
@@ -171,6 +170,11 @@ header.top .btn{gap:0}
       <a class="btn" data-submit href="#" target="_blank" rel="noopener">Submit an event</a>
     </div>
     <p class="hint">Submitting opens a short form on GitHub. Your event shows up here a minute or two later.</p>
+    <div class="week-nav">
+      <button class="btn" id="prev-week" aria-label="Previous week">← Prev</button>
+      <h2 id="week-label">This Week</h2>
+      <button class="btn" id="next-week" aria-label="Next week">Next →</button>
+    </div>
     <div class="days" id="days"></div>
   </section>
 
@@ -222,11 +226,29 @@ const CATS={
   network:{label:"Networking",short:"Networking",desc:"Meetups, résumé reviews, and mentorship, in person or online. Online meetups include a link to join."}
 };
 const FEEDS=[["all","Everything"],["inperson","In-person only"],["talk","Speaker sessions only"],["company","Company events only"],["network","Networking only"]];
-const WEEK=["2026-10-27","2026-10-28","2026-10-29","2026-10-30"];
 
 let events=[];
 const now0=new Date();
-const state={cat:"all",day:null,view:"list",month:new Date(now0.getFullYear(),now0.getMonth(),1),loaded:false,error:false};
+const currentWeekStart = new Date(now0);
+currentWeekStart.setDate(now0.getDate() - now0.getDay());
+
+const state={
+  cat:"all",day:null,view:"list",
+  month:new Date(now0.getFullYear(),now0.getMonth(),1),
+  weekStart: currentWeekStart,
+  loaded:false,error:false
+};
+
+function getDynamicWeek() {
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(state.weekStart);
+    d.setDate(d.getDate() + i);
+    days.push(isoOf(d));
+  }
+  return days;
+}
+
 const $=s=>document.querySelector(s);
 
 document.querySelectorAll("[data-submit]").forEach(a=>a.href=SUBMIT_URL);
@@ -255,9 +277,15 @@ function reportUrl(e){
 }
 
 function renderDays(){
-  $("#days").innerHTML=WEEK.map(iso=>{
+  const currentWeek = getDynamicWeek();
+  const endOfWeek = new Date(state.weekStart);
+  endOfWeek.setDate(endOfWeek.getDate() + 6);
+  const formatMonth = dt => dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  $("#week-label").textContent = `${formatMonth(state.weekStart)} - ${formatMonth(endOfWeek)}, ${endOfWeek.getFullYear()}`;
+
+  $("#days").innerHTML=currentWeek.map(iso=>{
     const n=events.filter(e=>e.date===iso).length;
-    const dow=d(iso).toLocaleDateString("en-US",{weekday:"long"});
+    const dow=d(iso).toLocaleDateString("en-US",{weekday:"short"});
     const cnt=state.loaded?`${n} ${n===1?"event":"events"}`:"&nbsp;";
     return `<button class="day" data-day="${iso}" aria-pressed="${state.day===iso}"><span class="dow">${dow}</span><span class="num">${d(iso).getDate()}</span><span class="cnt">${cnt}</span></button>`;
   }).join("");
@@ -311,12 +339,13 @@ function renderMonth(){
   const first=new Date(y,mo,1),lead=first.getDay();
   const pool=events.filter(matchesCat);
   const total=new Date(y,mo+1,0).getDate()+lead>35?42:35;
+  const currentWeek = getDynamicWeek();
   let cells=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(w=>`<div class="wd">${w}</div>`).join("");
   for(let i=0;i<total;i++){
     const dt=new Date(y,mo,1-lead+i),iso=isoOf(dt),out=dt.getMonth()!==mo;
     const es=pool.filter(e=>e.date===iso).sort(byTime);
     const pills=es.slice(0,2).map(e=>`<span class="pill" style="--cat:var(--c-${e.tags[0]||"network"})">${esc(e.title)}</span>`).join("")+(es.length>2?`<span class="more">+${es.length-2} more</span>`:"");
-    cells+=`<button class="cell${out?" out":""}${WEEK.includes(iso)?" week":""}" ${out?'disabled tabindex="-1"':`data-goto="${iso}"`} aria-label="${fmtDay(iso)}, ${es.length} ${es.length===1?"event":"events"}"><span class="n">${dt.getDate()}</span>${out?"":pills}</button>`;
+    cells+=`<button class="cell${out?" out":""}${currentWeek.includes(iso)?" week":""}" ${out?'disabled tabindex="-1"':`data-goto="${iso}"`} aria-label="${fmtDay(iso)}, ${es.length} ${es.length===1?"event":"events"}"><span class="n">${dt.getDate()}</span>${out?"":pills}</button>`;
   }
   $("#out").innerHTML=`<div class="month"><div class="mhead"><h2>${m.toLocaleDateString("en-US",{month:"long",year:"numeric"})}</h2><div class="nav"><button class="btn" data-mnav="-1" aria-label="Previous month">Prev</button><button class="btn" data-mnav="1" aria-label="Next month">Next</button></div></div><div class="grid-scroll"><div class="mgrid">${cells}</div></div></div>`;
 }
@@ -333,6 +362,20 @@ document.addEventListener("click",ev=>{
   if(t.dataset.day){state.day=state.day===t.dataset.day?null:t.dataset.day;state.view="list";render();return}
   if(t.dataset.cat){state.cat=t.dataset.cat;render();return}
   if(t.dataset.view){state.view=t.dataset.view;render();return}
+  if(t.id==="prev-week"){
+    state.weekStart.setDate(state.weekStart.getDate() - 7);
+    render(); return;
+  }
+  if(t.id==="next-week"){
+    const nextWeek = new Date(state.weekStart);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    if(nextWeek.getFullYear() > 2027 || (nextWeek.getFullYear() === 2027 && nextWeek.getMonth() > 9)) {
+      toast("Calendar is limited to October 2027.");
+      return;
+    }
+    state.weekStart = nextWeek;
+    render(); return;
+  }
   if(t.id==="clear"){state.cat="all";state.day=null;render();return}
   if(t.dataset.mnav){state.month=new Date(state.month.getFullYear(),state.month.getMonth()+Number(t.dataset.mnav),1);render();return}
   if(t.dataset.goto){state.day=t.dataset.goto;state.view="list";render();$("#status").scrollIntoView({block:"start"});return}
