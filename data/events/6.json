@@ -1,0 +1,29 @@
+{
+  "id": 6,
+  "title": "Example 1",
+  "host": "",
+  "date": "",
+  "endDate": "",
+  "start": "",
+  "end": "",
+  "dateTbd": true,
+  "timeTbd": true,
+  "endTbd": false,
+  "tz": "America/Los_Angeles",
+  "tzLabel": "PT",
+  "where": "Online",
+  "tags": [
+    "inperson"
+  ],
+  "url": "https://idkayllaa.github.io/keep-connected/",
+  "desc": "",
+  "startUtc": null,
+  "endUtc": null,
+  "submittedBy": "idkayllaa",
+  "issue": 6,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-20T12:28:23.785Z",
+  "updatedAt": "2026-10-20T12:28:23.785Z"
+}
