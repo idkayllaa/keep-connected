@@ -11,6 +11,7 @@ export const LABELS = {
   title: "Event name",
   tags: "Event type",
   date: "Date",
+  endDate: "End date",
   start: "Start time",
   end: "End time",
   tz: "Time zone",
@@ -51,7 +52,6 @@ export const FEEDS = {
 
 // ---------- Issue form parsing ----------
 
-// GitHub issue forms render as "### Label\n\nvalue" sections.
 export function parseForm(body) {
   const out = {};
   const text = String(body || "").replace(/\r\n/g, "\n");
@@ -155,7 +155,16 @@ export function validateSubmission(fields, author, now = new Date()) {
   const date = dateTbd ? "" : parseDate(rawDate);
   if (!dateTbd && !date) errors.push("Write the date as YYYY-MM-DD, for example 2026-10-28, or write TBD if it isn't set yet.");
 
-  // Times are optional. Blank or TBD start time means the time isn't set yet.
+  const rawEndDate = fields[LABELS.endDate];
+  let endDate = date;
+  if (!isBlank(rawEndDate)) {
+    if (!isTbd(rawEndDate)) {
+      endDate = parseDate(rawEndDate);
+      if (!endDate) errors.push("Write the end date as YYYY-MM-DD, or leave it blank.");
+    }
+  }
+  if (date && endDate && endDate < date) errors.push("The end date cannot be before the start date.");
+
   const rawStart = fields[LABELS.start], rawEnd = fields[LABELS.end];
   const timeTbd = dateTbd || isBlank(rawStart) || isTbd(rawStart);
   const start = timeTbd ? "" : parseTime(rawStart);
@@ -192,12 +201,11 @@ export function validateSubmission(fields, author, now = new Date()) {
   let startUtc = null, endUtc = null;
   if (!dateTbd && date && tzChoice && (timeTbd || (start && (endTbd || end)))) {
     if (timeTbd) {
-      // All-day: span the whole day in the event's time zone.
       startUtc = zonedToUtc(date, "00:00", tzChoice.tz);
-      endUtc = zonedToUtc(nextDay(date), "00:00", tzChoice.tz);
+      endUtc = zonedToUtc(nextDay(endDate || date), "00:00", tzChoice.tz);
     } else {
       startUtc = zonedToUtc(date, start, tzChoice.tz);
-      endUtc = endTbd ? new Date(startUtc.getTime() + 3600e3) : zonedToUtc(date, end, tzChoice.tz);
+      endUtc = endTbd ? new Date(startUtc.getTime() + 3600e3) : zonedToUtc(endDate || date, end, tzChoice.tz);
     }
     if (endUtc <= startUtc) errors.push("The end time needs to be after the start time.");
     else if (endUtc < now) errors.push("That event has already ended. Check the date and times.");
@@ -208,7 +216,7 @@ export function validateSubmission(fields, author, now = new Date()) {
   return {
     errors,
     event: {
-      title, host, date, start, end,
+      title, host, date, endDate, start, end,
       dateTbd, timeTbd, endTbd,
       tz: tzChoice.tz, tzLabel: tzChoice.short,
       where, tags, url, desc,
@@ -259,9 +267,9 @@ export function toIcs(events, { name, siteUrl, host }) {
     "REFRESH-INTERVAL;VALUE=DURATION:PT1H", "X-PUBLISHED-TTL:PT1H",
   ];
   for (const e of events) {
-    if (e.dateTbd || !e.startUtc) continue; // added to calendars once a date is set
+    if (e.dateTbd || !e.startUtc) continue;
     const timing = e.timeTbd
-      ? [`DTSTART;VALUE=DATE:${e.date.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${nextDay(e.date).replace(/-/g, "")}`]
+      ? [`DTSTART;VALUE=DATE:${e.date.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${nextDay(e.endDate || e.date).replace(/-/g, "")}`]
       : [`DTSTART:${icsDate(e.startUtc)}`, `DTEND:${icsDate(e.endUtc)}`];
     const note = e.timeTbd ? "Time to be announced." : e.endTbd ? "End time to be announced." : "";
     const details = [note, e.desc, e.host ? `Hosted by ${e.host}` : "", `RSVP or join: ${e.url}`, `More events: ${siteUrl}`].filter(Boolean).join("\n\n");
