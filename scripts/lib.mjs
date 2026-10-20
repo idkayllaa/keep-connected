@@ -69,9 +69,9 @@ export function parseForm(body) {
 export function checkedBoxes(value) {
   return String(value || "")
     .split("\n")
-    .map((l) => l.match(/^\s*-\s*[[xX]]\s*(.+?)\s*$/))
+    .map((l) => l.match(/^\s*(?:[-*+]\s*)?\[\s*[xX]\s*\]\s*(.+?)\s*$/))
     .filter(Boolean)
-    .map((m) => m[1]);
+    .map((m) => m[1].replace(/[*_~`]/g, "").trim());
 }
 
 const TBD_RE = /^(tbd|tba|to be (determined|announced|decided)|not (set|scheduled) yet)\.?$/i;
