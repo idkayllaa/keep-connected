@@ -1,0 +1,29 @@
+{
+  "id": 13,
+  "title": "RECLAIM",
+  "host": "",
+  "date": "2026-10-28",
+  "endDate": "2026-10-28",
+  "start": "",
+  "end": "",
+  "dateTbd": false,
+  "timeTbd": true,
+  "endTbd": false,
+  "tz": "America/Los_Angeles",
+  "tzLabel": "PT",
+  "where": "Los Angeles, CA",
+  "tags": [
+    "inperson"
+  ],
+  "url": "https://reclaim-website-ebon.vercel.app/",
+  "desc": "\"A one-day Women in Tech experience happening October 28th in the Anaheim / LA area!\"",
+  "startUtc": "2026-10-28T07:00:00.000Z",
+  "endUtc": "2026-10-29T07:00:00.000Z",
+  "submittedBy": "idkayllaa",
+  "issue": 13,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-21T17:09:12.939Z",
+  "updatedAt": "2026-10-21T17:09:12.939Z"
+}
