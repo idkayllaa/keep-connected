@@ -1,0 +1,29 @@
+{
+  "id": 10,
+  "title": "NEXT GEN GIRLS SUMMIT: TECH EDITION",
+  "host": "",
+  "date": "2026-11-13",
+  "endDate": "2026-11-13",
+  "start": "13:00",
+  "end": "18:00",
+  "dateTbd": false,
+  "timeTbd": false,
+  "endTbd": false,
+  "tz": "America/New_York",
+  "tzLabel": "ET",
+  "where": "Hunter College (New York City, NY)",
+  "tags": [
+    "inperson"
+  ],
+  "url": "https://www.linkedin.com/feed/update/urn:li:activity:7517941014448418816?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7517941014448418816%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29",
+  "desc": "\"A one-day summit for 80 college girls in tech. built by students, for students. open to students from ANY nyc college\"",
+  "startUtc": "2026-11-13T18:00:00.000Z",
+  "endUtc": "2026-11-13T23:00:00.000Z",
+  "submittedBy": "idkayllaa",
+  "issue": 10,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-21T16:57:35.765Z",
+  "updatedAt": "2026-10-21T16:57:35.765Z"
+}
