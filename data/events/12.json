@@ -1,0 +1,29 @@
+{
+  "id": 12,
+  "title": "The Floor is Yours",
+  "host": "The Depository Trust & Clearing Corporation (DTCC)",
+  "date": "2026-10-23",
+  "endDate": "2026-10-23",
+  "start": "15:00",
+  "end": "",
+  "dateTbd": false,
+  "timeTbd": false,
+  "endTbd": true,
+  "tz": "America/New_York",
+  "tzLabel": "ET",
+  "where": "Online",
+  "tags": [
+    "talk"
+  ],
+  "url": "https://lnkd.in/p/gK-J-_t7",
+  "desc": "\"We're excited to introduce The Floor Is Yours, a virtual speaker forum designed to keep the spirit of the Grace Hopper Celebration alive!\"",
+  "startUtc": "2026-10-23T19:00:00.000Z",
+  "endUtc": "2026-10-23T20:00:00.000Z",
+  "submittedBy": "idkayllaa",
+  "issue": 12,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-21T17:05:25.697Z",
+  "updatedAt": "2026-10-21T17:05:25.697Z"
+}
