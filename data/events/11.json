@@ -1,0 +1,29 @@
+{
+  "id": 11,
+  "title": "1:1's",
+  "host": "Vyshnavi Khosa",
+  "date": "",
+  "endDate": "",
+  "start": "",
+  "end": "",
+  "dateTbd": true,
+  "timeTbd": true,
+  "endTbd": false,
+  "tz": "America/Los_Angeles",
+  "tzLabel": "PT",
+  "where": "Online",
+  "tags": [
+    "network"
+  ],
+  "url": "https://www.linkedin.com/feed/update/urn:li:activity:7516468765258158080?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7516468765258158080%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29",
+  "desc": "\"If you’re a woman early in your career or still in school who was planning to go, my DMs are open. Happy to chat about careers in AI/ML engineering or take a look at your resume.\"",
+  "startUtc": null,
+  "endUtc": null,
+  "submittedBy": "idkayllaa",
+  "issue": 11,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-21T17:02:08.349Z",
+  "updatedAt": "2026-10-21T17:02:08.349Z"
+}
