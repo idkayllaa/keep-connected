@@ -1,0 +1,31 @@
+{
+  "id": 16,
+  "title": "CUSEC 2027",
+  "host": "Canadian University Software Engineering Conference (CUSEC)",
+  "date": "2027-01-07",
+  "endDate": "2027-01-09",
+  "start": "",
+  "end": "",
+  "dateTbd": false,
+  "timeTbd": true,
+  "endTbd": false,
+  "tz": "America/New_York",
+  "tzLabel": "ET",
+  "where": "Montreal, Canada",
+  "tags": [
+    "inperson",
+    "talk",
+    "network"
+  ],
+  "url": "https://2027.cusec.net/",
+  "desc": "**CUSEC 2027 is coming to Montréal, January 7–9!** Join us for CUSEC, Canada's longest running software engineering conference. Our team is dedicated to creating more opportunities for women in tech at our conference, through networking mixers, panels, and mentorship opportunities. Use code \"GHC26\" to get a discounted ticket. RSVP at [2027.cusec.net](http://2027.cusec.net/).",
+  "startUtc": "2027-01-07T05:00:00.000Z",
+  "endUtc": "2027-01-10T05:00:00.000Z",
+  "submittedBy": "janelletam",
+  "issue": 16,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-23T18:03:45.383Z",
+  "updatedAt": "2026-10-23T18:03:45.383Z"
+}
