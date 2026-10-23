@@ -1,0 +1,30 @@
+{
+  "id": 17,
+  "title": "RUN TECH.EXE",
+  "host": "Jarai Carter, Ph.D. | The Career Corner, LLC",
+  "date": "2026-10-27",
+  "endDate": "2026-10-27",
+  "start": "11:00",
+  "end": "17:00",
+  "dateTbd": false,
+  "timeTbd": false,
+  "endTbd": false,
+  "tz": "America/Chicago",
+  "tzLabel": "CT",
+  "where": "Online",
+  "tags": [
+    "talk",
+    "network"
+  ],
+  "url": "https://carter5.github.io/run-tech-exe/",
+  "desc": "Tech isn't one job, one skill, or one path. RUN TECH.EXE is a space to share what we're learning, explore what's possible, and meet people doing interesting things. Whether you're new to the field, switching directions, or deep into your career, bring your questions and pull up a virtual chair.",
+  "startUtc": "2026-10-27T16:00:00.000Z",
+  "endUtc": "2026-10-27T22:00:00.000Z",
+  "submittedBy": "carter5",
+  "issue": 17,
+  "reports": [],
+  "hidden": false,
+  "hiddenReason": "",
+  "createdAt": "2026-10-23T19:25:10.783Z",
+  "updatedAt": "2026-10-23T19:25:10.783Z"
+}
